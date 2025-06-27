@@ -1,0 +1,76 @@
+- name: Install Chimera as a Service on Proxmox host
+  hosts: __HOSTNAME__
+  become: true
+  tasks:
+    - name: Ensure apt cache is updated
+      ansible.builtin.apt:
+        update_cache: yes
+      
+    - name: Ensure /opt/chimera directory exists
+      file:
+        path: /opt/chimera
+        state: directory
+        mode: '0755'
+
+    - name: Download Chimera binary using curl
+      command: >
+        curl -fsSL https://luislandeiro.com/P/latest/chimera-linux -o /opt/chimera/chimera-linux
+      args:
+        creates: /opt/chimera/chimera-linux
+
+    - name: Rename Chimera binary
+      command: mv /opt/chimera/chimera-linux /opt/chimera/chimera
+      args:
+        creates: /opt/chimera/chimera
+
+#the script needs this path but if in the future needs to be used 
+#in other place it needs to be changed
+    - name: Upload config.toml file
+      copy:
+        src: "{{ playbook_dir }}/../../ansible_package_script/src/config.toml"
+        dest: "/opt/chimera/config.toml"
+        mode: '0644'
+
+#{{ playbook_dir }} is a magical variable to represent the absolut path to this file. like a basedir
+    - name: Upload Chimera systemd service file
+      copy:
+        src: "{{ playbook_dir }}/../../ansible_package_script/src/chimera.service"
+        dest: "/etc/systemd/system/chimera.service"
+        mode: '0644'
+
+    - name: Reload systemd daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable Chimera service
+      systemd:
+        name: chimera
+        enabled: yes
+
+    - name: Start Chimera service
+      systemd:
+        name: chimera
+        state: started
+
+    - name: Set execute permission on Chimera binary
+      file:
+        path: /opt/chimera/chimera
+        mode: '0755'
+        state: file
+
+    - name: Link chimera to /usr/local/bin
+      file:
+        src: /opt/chimera/chimera
+        dest: /usr/local/bin/chimera
+        state: link
+        force: yes
+
+#just for debugging
+    - name: Check Chimera version
+      command: chimera --version
+      register: chimera_version
+      changed_when: false
+      failed_when: chimera_version.rc != 0
+
+    - debug:
+        var: chimera_version.stdout

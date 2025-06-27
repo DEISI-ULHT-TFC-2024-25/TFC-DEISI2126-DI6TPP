@@ -1,0 +1,30 @@
+---
+- name: Install Docker and run __DOCKERIMAGE__
+  hosts: __HOSTNAME__
+  become: yes
+  vars:
+    docker_image: __DOCKERIMAGE__      # The Docker image to run
+    container_name: __CONTAINERNAME__   # The name of the Docker container
+    host_ports:                      # Host-to-container port mappings
+      - __HOSTPORT1__
+      - __HOSTPORT2__
+    restart_policy: __RESTARTPOLICY__         # Docker container restart policy
+    timezone: __TIMEZONE__
+  tasks:
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Run the specified Docker container
+      docker_container:
+        name: __CONTAINERNAME__
+        image: __DOCKERIMAGE__
+        state: started
+        restart_policy: __RESTARTPOLICY__
+        ports:
+          - "__HOSTPORT1__"
+          - "__HOSTPORT2__"
+        env:
+          TZ: __TIMEZONE__

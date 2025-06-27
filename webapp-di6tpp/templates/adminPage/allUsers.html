@@ -1,0 +1,16 @@
+{% extends "adminPage/layoutAdminPage.html" %}
+{% block content %}
+    <h1>Manage Users</h1>
+    {% if users %}
+        {% for user in users %}
+            <div class="credential-item">
+                <div><strong>Username:</strong> {{ user.username }}</div>
+                <div><strong>Role:</strong> {{ user.role }}</div>
+                <a href="/admin/all_users/edit?user_id={{ user.user_id }}" >Edit</a>
+                <button onclick="deleteUser({{ user.user_id }})">Remove</button>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div>No users found.</div>
+    {% endif %}
+{% endblock %}

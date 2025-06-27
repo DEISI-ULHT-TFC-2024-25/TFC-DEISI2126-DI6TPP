@@ -1,0 +1,153 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+header {
+    background-color: #343a40;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+header img {
+    height: 76px;
+}
+
+header .user-info {
+    font-size: 16px;
+}
+
+/* Layout */
+main {
+    display: flex;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/*VMs list box */
+.VM-list {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+    
+/* cards for every VM */
+.VM-card {
+    background-color: #343a40;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    margin: 2% 51% 2% 1%;
+}
+
+.VM-card span {
+    font-weight: bold;
+}
+
+
+.VM-actions {
+    display: flex;
+    gap: 15px; 
+    align-items: center;
+}
+
+.VM-info a {
+    margin-bottom: 5px;
+    color : #ff4400;
+}
+
+a.create-container {
+    background: none;
+    border: none;
+    color: green;
+    font-size: 16px;
+    cursor: pointer;
+    padding-bottom: 2%;
+}
+
+
+a.modify-container {
+    background: none;
+    border: none;
+    color: orange;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+a.remove {
+    color: red;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration-line: none;
+}
+
+form{
+  padding-right: 61%;
+  padding-left: 5%;
+  padding-top: 2%;
+}
+
+nav button,
+nav button:hover {
+    all: unset; /* Remove the default button style */
+    cursor: pointer;
+}
+
+
+form label {
+    display: block;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+/* forms button */
+form button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+.error-box {
+    background-color: #f5c6cb;
+    padding: 40px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.VM-card br{
+    margin:3%;
+}
+
+.status-box {
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+}

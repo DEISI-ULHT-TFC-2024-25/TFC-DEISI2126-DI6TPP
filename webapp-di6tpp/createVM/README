@@ -1,0 +1,158 @@
+# VM Creation via Proxmox
+
+This directory contains the necessary template files, CSVs, and scripts to automate the creation of virtual machines (VMs) in Proxmox using Terraform. The make_terraform_deploys.sh script, along with associated Terraform configuration files, handles the deployment process for the VMs.
+
+## Resumed Components:
+- make_terraform_deploys.sh: A bash script that handles the deployment of VMs using Terraform. It is the primary script responsible for automating the creation of VMs based on the input CSV file and predefined Terraform templates.
+
+- csvs: This folder contains the CSV files generated for each VM during the creation process. These CSV files are essential for defining the specific configuration of each VM.
+
+- vars.tf: Contains the variables for SSH keys that allow users to access the created VMs via SSH.
+
+- vars_sensitive.tf: Contains sensitive information such as the Proxmox API token and secret.
+
+- provider.tf: Contains the configuration information to establish access to the Proxmox environment.
+
+- terraform.tfvars: This file contains the Proxmox credentials, which are read when executing the Terraform scripts. but if you want to know more about proxmox creds go to data_model folder readme .
+
+
+## Steps Performed by make_terraform_deploys.sh:
+
+Initial Setup and Validation:
+- The script begins by checking by input if the CSV file by, passed as an argument, exists. If the CSV file is not found, the script will terminate and return an error message ("$INPUT file not found").
+
+### Directory Setup:
+
+A new directory is created for the deployment process using the CSV file name (e.g., {vm name}deploy-parameters).
+
+This directory is populated with essential Terraform configuration files, including:
+
+- vars.tf
+
+- vars_sensitive.tf
+
+- provider.tf
+
+- terraform.tfvars
+
+### CSV Parsing and Variable Assignment:
+
+The script reads each line of the CSV (excluding the header) and extracts the following VM configuration values:
+
+- VMID-> VM Unique identifier
+- VMIP-> VM IP Address
+- VMCIDR->VM Subnet Mask
+- VMGW-> Gateway address
+- VMBR-> Bridge interface
+- TEMPLATE-> Name or identifier of the template
+- VMNAME-> VM Name
+- VMCPU-> Number of CPU cores
+- VMMEM -> Amount of memory (MB)
+- VMDISK01 -> Size of primary disk (GB)
+- VMDISK01LOC -> Storage location for the primary virtual disk
+- VMDISK02 / VMDISK02LOC -> 2nd virtual disk information
+
+### Template Selection:
+
+Based on the number of disks specified (single disk or two disks), the script uses the appropriate template file (main_1d.tf for one disk or main_2d.tf for two disks) to create the necessary Terraform configuration for each VM.
+
+The placeholders in these templates files (__VMID__, __VMIP__, __VMNAME__, etc...) are replaced with the corresponding values from the CSV file using sed commands.
+
+### Writing the Final main.tf:
+
+After processing each line in the CSV, the script writes the modified content into a main.tf file, saved in the newly created deployment directory. This file is then used by Terraform to deploy the VMs.
+
+### Sensitive Variables Creation:
+
+The script generates a vars_sensitive.tf file to securely store sensitive variables such as the Proxmox API token (used for authentication with Proxmox).
+
+### Final Steps:
+
+The script outputs the path to the deployment directory for reference and ensures that the Terraform configurations are properly set up to deploy the VMs.
+
+## Template Overview
+
+The two primary templates used for deploying VMs in Proxmox are main_1d.tf (for a single-disk VM) and main_2d.tf (for a two-disk VM). 
+These templates define the infrastructure for the VMs, including CPU, memory, disk setup, and network configuration.
+
+### 1. main_1d.tf: Single Disk VM
+This template is used to create a VM with a single disk. 
+The VM is configured with the following:
+
+VM Configuration: VMID, VM Name, CPU, memory, and the template to clone.
+
+Disk Configuration: Only one disk (scsi0) is configured, specifying its size and storage location.
+
+Network Configuration: The VM uses a virtio network model and is connected to a specific network bridge (e.g., vmbr107 bridge for data traffic).
+
+Cloud-Init Disk (ide0): This disk is used for cloud-init, which allows for automatic configuration of the VM (e.g., user setup, SSH keys). It is typically mounted from the local-lvm storage and is not used for general storage.
+
+IP Configuration: The script configures the IP, CIDR, and gateway for the VM which will be the info on csv processed by the script.
+
+### 2. main_2d.tf: Two Disk VM
+This template is used to create a VM with two disks. The configuration is similar to the single disk template but with the addition of a secondary disk (scsi1). The secondary disk is configured with its own size and storage location. The boot order includes both disks, and both are attached to the VM.
+
+Additional Disk: The secondary disk (scsi1) is configured alongside the primary disk.
+
+Boot Configuration: The VM boots from the first disk (scsi0), but the secondary disk (scsi1) is also defined.
+
+### Provider Configuration
+The provider.tf file defines how Terraform interacts with the Proxmox API. It specifies the API URL, token ID, and token secret needed to authenticate with Proxmox.
+
+pm_api_url: The URL of the Proxmox server's API.
+
+pm_api_token_id: The Proxmox API token ID for authentication.
+
+pm_api_token_secret: The Proxmox API token secret for authentication.
+
+pm_tls_insecure: A flag to allow insecure SSL connections if necessary.
+
+### Variables
+The vars.tf and vars_sensitive.tf files define variables used for configuring the VMs.
+
+vars.tf contains the SSH keys that will be added to the VMs to allow users to access them remotely.
+
+vars_sensitive.tf contains sensitive variables such as the Proxmox API token and secret.
+
+
+## Running the Deployment For Testing:
+
+### To run the VM deployment process, follow these steps:
+
+Ensure you have the template files and required CSV file with VM configurations. 
+The CSV should have the following columns:
+
+VMID, VMIP, VMCIDR, VMGW, VMBR, TEMPLATE, VMNAME, VMCPU, VMMEM, VMDISK01, VMDISK01LOC, VMDISK02, VMDISK02LOC, VMROLE.
+
+### Execute the script with the following command:
+
+./make terraform deploys.sh parameters.csv
+
+### The script will resuming:
+
+- Parse the CSV file.
+
+- Generate Terraform configuration files.
+
+- Apply the Terraform script to deploy the VMs as per the specified configurations.
+
+## Important Notes:
+### File Permissions:
+
+Ensure that the Proxmox credentials file is properly configured and has the correct permissions for accessing Proxmox resources.
+on the webapp the account will be associated with a correct one but for testing you should check on proxmox first
+
+### Terraform Installation:
+
+Ensure Terraform is installed on the system. If Terraform is not installed, the script will fail.
+
+### Proxmox Setup:
+
+Ensure that the Proxmox host is properly configured and accessible from the system running the script. The script uses the Proxmox API package for VM deployment.
+
+### Customization:
+
+If you need to modify the templates or the variables used, please ensure to update the respective Terraform template files (main_1d.tf, main_2d.tf, etc.) accordingly.
+
+
+This automation script simplifies the process of creating multiple VMs in Proxmox by integrating Terraform for infrastructure management. The make_terraform_deploys.sh script reads VM configurations from a CSV file, processes them, and deploys VMs based on predefined templates. With this setup, scaling and managing multiple VMs becomes more efficient and consistent.

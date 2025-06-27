@@ -1,0 +1,46 @@
+[outputs.kv]
+Format = "json"
+Urls = [ "stdout://" ]
+
+[outputs.metago_pdm]
+Urls = [ "metagos://metadonai.pdmfc.com/dynamic-ports/10000/:80/" ]
+
+#[outputs.k8scar]
+#Urls = [ "metagos://collector.k8s.itrust6g.pdmfc.com/index"]
+#SkipVerify = true
+
+[outputs.devscar]
+Urls = [ "metagos://collector-dev.k8s.itrust6g.pdmfc.com/index"]
+SkipVerify = true
+
+[outputs.scar]
+Urls = [ "metagos://scar.itrust6g.pdmfc.com/index"]
+
+[file.sshint_syslog]
+Name = "sshint_syslog"
+Path = "/var/log/syslog"
+SourceType = "syslog-template"
+Index = "pdmfc_linux_syslog"
+Outputs = [ "outputs.scar", "outputs.devscar"]
+BackOff=2
+BatchSize=1000000
+
+[file.auth]
+Path = "/var/log/auth.log"
+SourceType = "syslog-template"
+Index = "pdmfc_linux_auth"
+Outputs = [ "outputs.scar", "outputs.devscar" ]
+BackOff=2
+BatchSize=1000000
+
+[sourcetypes.syslog-template]
+Format = "METAGO"
+TimeZone = "Europe/Lisbon"
+TimeField = "_time"
+TimeFormat = "MMM-DD HH:mm:ss"
+
+[system]
+Database="chimera.db"
+
+[system.web]
+Disabled=false

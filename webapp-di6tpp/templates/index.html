@@ -1,0 +1,25 @@
+{% extends "layout_homepage.html" %}
+
+{% block title %}Create VM{% endblock %}
+
+{% block content %}
+
+    <main>
+        <div id="vmListPage" class="content">
+            <h2>All VMs</h2>
+            <a href="/create-vm" class="create-container">+ Add VM</a>
+            {% if VMs %}
+                {% for vm in VMs %}
+                    <div class="VM-card">
+                        Vm ID: {{ vm.vm_id or 'N/A' }}<br>
+                        Name: {{ vm.vmname or 'N/A' }}<br>
+                        VM IP: {{ vm.vm_ip or 'N/A' }}<br>
+                        <button onclick="deleteVm({{ vm.vm_id }})">Remove</button>
+                    </div>                
+                {% endfor %}
+            {% else %}
+                <p>No Vms found. Please create one</p>
+            {% endif %}
+        </div>
+    </main>
+{% endblock %}

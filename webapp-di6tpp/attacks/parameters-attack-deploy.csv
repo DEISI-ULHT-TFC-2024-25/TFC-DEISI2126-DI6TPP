@@ -1,0 +1,2 @@
+ATTACKER_HOST_IP,HOST_USER,ATTACK_SCRIPT
+10.5.32.122,techsupport,webgoat/broken-authentication-on-10.5.32.121.py

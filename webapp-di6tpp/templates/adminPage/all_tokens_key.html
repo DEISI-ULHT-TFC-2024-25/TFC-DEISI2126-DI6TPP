@@ -1,0 +1,25 @@
+{% extends "adminPage/layoutAdminPage.html" %}
+
+{% block title %}All Token Keys{% endblock %}
+
+{% block content %}
+
+  <div class="top-bar">
+  <h1>All Proxmox Credentials</h1>
+
+
+    <div class="buttons" style="justify-content: flex-end;">
+      {% if credentials %}
+        {% for cred in credentials %}
+          <div class="credential-item">
+            <div><strong>Name:</strong> {{ cred.proxmox_user }}{{cred.token_id}}</div>
+            <a href="/admin/all_tokens_key/edit?proxmox_id={{ cred.proxmox_id }}" >Edit</a>
+            <button onclick="deleteToken({{ cred.proxmox_id }})">Remove</button>
+          </div>
+        {% endfor %}
+      {% else %}
+          <p>No credentials found.</p>
+      {% endif %}
+    </div>
+  </div>  
+{% endblock %}

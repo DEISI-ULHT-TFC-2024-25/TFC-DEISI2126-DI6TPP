@@ -1,0 +1,5 @@
+all:
+  hosts:
+    attacker_host:
+      ansible_host: __ATTACKER_HOST_IP__
+      ansible_user: __HOST_USER__

@@ -1,0 +1,41 @@
+- name: Deploy and Execute Attack Script
+  hosts: attacker_host
+  tasks:
+    - name: Check if the script is already present on the remote host
+      stat:
+        path: /home/{{ ansible_user }}/__ATTACK_SCRIPT__
+      register: script_status
+    
+    - name: Inform that the script is already present
+      debug:
+        msg: "The script is already present on the remote host. Skipping upload."
+      when: script_status.stat.exists
+
+    - name: Create directory on attacker host
+      file:
+        path: /home/{{ ansible_user }}/__DIR_NAME__
+        state: directory
+        mode: '0755'
+      when: not script_status.stat.exists
+
+    - name: Upload Python template
+      template:
+        src: /home/lferreira/di6tpp/webapp/webapp-di6tpp/attacks/__ATTACK_SCRIPT__
+        dest: /home/{{ ansible_user }}/__DIR_NAME__
+        mode: '0644'
+      when: not script_status.stat.exists
+    
+    - name: Execute the attack script
+      command: python3 /home/{{ ansible_user }}/__ATTACK_SCRIPT__
+      register: script_output
+      changed_when: script_output.rc != 0
+      ignore_errors: yes
+
+    - name: Print script output
+      debug:
+        msg: "{{ script_output.stdout_lines }}"
+    
+    - name: Print script errors (if any)
+      debug:
+        msg: "{{ script_output.stderr_lines }}"
+      when: script_output.stderr_lines is defined and script_output.stderr_lines | length > 0

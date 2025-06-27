@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #1abc9c;
+}
+
+/* Conteúdo principal */
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    width: 100%;
+}
+
+/* Cards e form */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+}
+
+input, button, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #16a085;
+}
+
+/* Lista de utilizadores ou credenciais */
+.user-list {
+    margin-top: 20px;
+}
+
+.user-list div,
+.credential-item {
+    background: #ecf0f1;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+/* Estilo específico para as caixas de credenciais */
+.credentials-box {
+    background-color: #e8edfa92;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.credential-item {
+    background-color: #42474e;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.credential-item strong {
+    display: inline-block;
+    min-width: 90px;
+}
+
+/* Botões no topo das caixas */
+.top-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.add-btn {
+    color: lightgreen;
+    font-weight: bold;
+    text-decoration: none;
+}
+.form-container {
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 17px;
+    margin-right: 18%;
+    margin-left: 4%;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+}
+
+.btn-save {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-save:hover {
+    background-color: #45a049;
+}

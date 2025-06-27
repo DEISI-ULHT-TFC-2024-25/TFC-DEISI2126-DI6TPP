@@ -1,0 +1,50 @@
+{% extends "layout_homepage.html" %}
+
+{% block title %}Attack Form{% endblock %}
+
+{% block content %}
+    <div id="vmAttackFormPage" class="form-container">
+        <h2>Lets start the ATTACK!</h2>
+        <form id="vmAttackForm">
+            <!-- in the future it can be a drop-box with available vm ips-->
+            <div>
+                <label for="vmipattacker">VM Attacker</label>
+                <select name="vmipattacker" id="vmipattacker">
+                    {% if vmsAttacker %}
+                        {% for vm in vmsAttacker %}
+                            <option value="{{ vm.vmname }}">{{ vm.vmname }} - {{ vm.vm_ip }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option disabled selected>No VMs created</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div>
+                <label for="vmiptarget">VM Target</label>
+                <select name="vmiptarget" id="vmiptarget">
+                    {% if vmsTarget %}
+                        {% for vm in vmsTarget %}
+                            <option value="{{ vm.vmname }}">{{ vm.vmname }} - {{ vm.vm_ip }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option disabled selected>No VMs created</option>
+                    {% endif %}
+                </select>
+            </div>
+            <!-- this can be a button-->
+            <div>
+                <label for="attacktype">Attack type</label>
+                <select name="attacktype" id="attacktype">
+                    <option value="ddos">DDoS</option>
+                    <option value="brute_force">Brute Force</option>
+                    <option value="sql_injection">SQL Injection</option>
+                    
+                </select>
+            </div>
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+            
+        </form>
+    </div>
+{% endblock %}

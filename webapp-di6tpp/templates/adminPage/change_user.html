@@ -1,0 +1,62 @@
+{% extends "adminPage/layoutAdminPage.html" %}
+
+{% block title %}Edit User Data{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+  <h1>Edit User Data</h1>
+</div>
+
+<div class="form-container">
+    <form id="edit-token-form" onsubmit="event.preventDefault(); change_user();">
+        
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required />
+            <div class="error-message" id="error-username"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" value="{{ user.password }}" required />
+            <div class="error-message" id="error-password"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="proxmox_user">Proxmox User:</label>
+            <input type="text" id="proxmox_user" name="proxmox_user" required />
+            <div class="error-message" id="error-proxmox_user"></div>
+        </div>
+  
+        <div class="form-group">
+            <label for="token_id">Token ID:</label>
+            <input type="text" id="token_id" name="token_id" required />
+            <div class="error-message" id="error-token_id"></div>
+        </div>
+        
+        <div class="form-group">
+            <label for="token_key">Token Key:</label>
+            <input type="password" id="token_key" name="token_key" required />
+            <div class="error-message" id="error-token_key"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="role">Choose a role</label>
+            <select id="role">
+                <option value="admin" {% if role == 'admin' %}selected{% endif %}>Administrator</option>
+                <option value="editor" {% if role == 'editor' %}selected{% endif %}>Editor</option>
+                <option value="viewer" {% if role == 'viewer' %}selected{% endif %}>Viewer</option>
+            </select>
+            <span id="error-role" class="error-message"></span>
+        </div>
+    
+        <input type="hidden" id="user_id" name="user_id" value="{{ user.user_id }}" />
+    
+        <div class="form-group">
+            <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+    
+    </form>
+  </div>
+
+{% endblock %}

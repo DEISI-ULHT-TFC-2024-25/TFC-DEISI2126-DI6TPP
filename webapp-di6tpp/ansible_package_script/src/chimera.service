@@ -1,0 +1,10 @@
+[Unit]
+Description=Chimera as a service
+
+[Service]
+WorkingDirectory=/opt/chimera
+ExecStart=/opt/chimera/chimera
+User=root
+
+[Install]
+WantedBy=multi-user.target

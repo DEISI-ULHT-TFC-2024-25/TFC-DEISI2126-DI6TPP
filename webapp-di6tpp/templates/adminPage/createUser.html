@@ -1,0 +1,51 @@
+{% extends "adminPage/layoutAdminPage.html" %}
+
+{% block title %}Create User{% endblock %}
+
+{% block content %}
+    <h1>Create User</h1>
+    <div class="card">
+        
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Write your username">
+            <span id="error-username" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Senha:</label>
+            <input type="password" id="password" placeholder="Write your password">
+            <span id="error-password" class="error-message"></span>
+        </div>
+        
+        <div class="form-group">
+            <label for="proxmox_user">proxmox user</label>
+            <input type="text" id="proxmox_user" placeholder="Change your proxmox user">
+            <span id="error-proxmox_user" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="token_token_id">Proxmox Token ID:</label>
+            <input type="text" id="token_id" placeholder="Write the Proxmox token ID">
+            <span id="error-token_id" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="token_token_key">Proxmox Secret Token :</label>
+            <input type="password" id="token_key" placeholder="Write the Proxmox token secret">
+            <span id="error-token_key" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="role">Choose a role</label>
+            <select id="role">
+                <option value="admin">Administrator</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+            </select>
+            <span id="error-role" class="error-message"></span>
+        </div>
+
+        <button onclick="addUser()">Create</button>
+    </div>
+{% endblock %}

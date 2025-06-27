@@ -1,0 +1,68 @@
+services:
+
+  # Database service
+  mariadb:
+    image: bitnami/mariadb:latest
+    container_name: mariadb-di6tpp
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306" 
+    volumes:
+    # stored in /var/lib/docker/volumes/webapp_mariadb_data/_data
+      - mariadb_data:/bitnami/mariadb/data #this is where the data will be stored and saved so it won't be lost when the container is stopped
+    networks:
+      - app_network
+
+  redis:
+    image: redis:latest
+    container_name: redis-di6tpp
+    ports:  
+      - "6379:6379"
+    volumes:
+      - redis_data:/data #	stored in /var/lib/docker/volumes/redis_data/_data
+    networks:
+      - app_network
+
+  # Web Application
+  webapp:
+    build: ./webapp-di6tpp #where the Dockerfile is
+    container_name: webapp-di6tpp
+    ports:
+      - "8081:8081" 
+    depends_on:
+      - mariadb  # wait for the db to be ready
+    volumes:
+      - ./webapp-di6tpp/data:/webapp-di6tpp/data #where for this to work we need to make sure that data folder already exists on the host:bind mounts problem
+      - ./webapp-di6tpp/migrations:/webapp-di6tpp/migrations
+      - ./database_data:/var/lib/mysql
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      PROXMOX_TOKEN_ID: ${PROXMOX_TOKEN_ID}
+      PROXMOX_TOKEN_SECRET: ${PROXMOX_TOKEN_SECRET}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ALGORITHM: "HS256"
+      JWT_EXPIRATION_TIME: "1800"
+    networks:
+      - app_network #same network so fastapi can acess by "mariadb"
+
+#to store data in /var/lib/mysql
+#the names will be webapp_mariadb_data.. because the project name is webapp (folder's name)
+volumes:
+  mariadb_data:
+  migrations:
+  redis_data:
+  webapp_data:
+
+networks:
+  app_network:
+    driver: bridge  # Network for comunication between containers

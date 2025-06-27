@@ -1,0 +1,40 @@
+{% extends "adminPage/layoutAdminPage.html" %}
+
+{% block title %}Edit Proxmox Credential{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+  <h1>Edit Proxmox Credential</h1>
+</div>
+
+<div class="form-container">
+  <form id="edit-token-form" onsubmit="event.preventDefault(); token_keys();">
+    
+    <div class="form-group">
+        <label for="proxmox_user">Proxmox User:</label>
+        <input type="text" id="proxmox_user" name="proxmox_user" value="{{ credential.proxmox_user }}" required />
+        <div class="error-message" id="error-proxmox_user"></div>
+      </div>
+  
+      <div class="form-group">
+        <label for="token_id">Token ID:</label>
+        <input type="text" id="token_id" name="token_id" value="{{ credential.token_id }}" required />
+        <div class="error-message" id="error-token_id"></div>
+      </div>
+  
+      <div class="form-group">
+        <label for="token_key">Token Key:</label>
+        <input type="password" id="token_key" name="token_key" value="{{ credential.token_key }}" required />
+        <div class="error-message" id="error-token_key"></div>
+      </div>
+  
+      <input type="hidden" id="proxmox_id" name="proxmox_id" value="{{ credential.proxmox_id }}" />
+  
+      <div class="form-group">
+        <button type="submit" class="btn-save">Save Changes</button>
+      </div>
+  
+    </form>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+---
+- name: Install Docker and run webgoat/webgoat-8.0
+  hosts: webgoat2
+  become: yes
+  vars:
+    docker_image: webgoat/webgoat-8.0      # The Docker image to run
+    container_name: webgoat   # The name of the Docker container
+    host_ports:                      # Host-to-container port mappings
+      - 2222:22
+      - 8080:80
+    restart_policy: unless-stopped         # Docker container restart policy
+    timezone: UTC
+  tasks:
+    - name: Ensure Docker service is running
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Run the specified Docker container
+      docker_container:
+        name: webgoat
+        image: webgoat/webgoat-8.0
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "2222:22"
+          - "8080:80"
+        env:
+          TZ: UTC

@@ -1,0 +1,109 @@
+{% extends "layout_homepage.html" %}
+
+{% block title %}Create VM{% endblock %}
+
+{% block content %}
+    <div id="vmCreateFormPage" class="form-container">
+        <h2>Create The Container</h2>
+
+        <form id="vmCreateForm">
+            <label for="vmrole">Choose a role</label>
+            <select id="vmrole" name="vmrole">
+                <option value="attacker">Attacker</option>
+                <option value="target">Target</option>
+            </select>
+
+            <div><label>VM Unique identifier</label><input type="number" name="vm_id"><span id="error-vm_id" class="error-message"></span></div>
+            <div><label>Name</label><input type="text" name="vmname"><span id="error-vmname" class="error-message"></span></div>
+            <div><label>VM IP Address (10.5.32.***)</label>
+                <input type="text" 
+                name="vmip" 
+                value="10.5.32." 
+                placeholder="10.5.32.XXX"
+                title="Please enter an IP in the format 10.5.32.XXX">
+                <span id="error-vm_ip" class="error-message"></span>
+            </div>
+            
+            <div>
+                <label for="vmcidr">VM Subnet Mask in CIDR notation</label>
+                <select id="vmcidr" name="vmcidr">
+                    <option value="20">20</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="vmgw">Gateway address</label>
+                <select id="vmgw" name="vmgw">
+                    <option value="10.5.47.254"> it6docker01 gateway</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="vmbr">Bridge interface</label>
+                <select id="vmbr" name="vmbr">
+                    <option value="vmbr107">vmbr107 (recommended)</option>
+                    <option value="vmbr106">vmbr106</option>
+                    <option value="vmbr105">vmbr105</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="template">Name or identifier of the template</label>
+                <select id="template" name="template">
+                    <option value="ubuntu24">ubuntu24</option>
+                    <option value="parrotos">ParrotOS</option>
+                </select>
+            </div>
+
+            <div><label for="vmcpu">Number of CPU cores</label>
+                <select id="vmcpu" name="vmcpu">
+                    <option value=2>2 core</option>
+                    <option value=1>1 core</option>
+                    
+                </select>
+            </div>
+            <div><label>Amount of memory (MB)</label>
+                <select id="vmmem" name="vmmem">
+                    <option value=2048>2048</option>
+                </select>
+            </div>
+            <div><label>Size of primary disk (GB)</label>
+                <div class="slider-container">
+                    <input type="range" 
+                           id="vmdisk01Slider" 
+                           name="vmdisk01" 
+                           min="20" 
+                           max="40" 
+                           value="30" 
+                           step="1"
+                           oninput="updateDiskValue(this.value)">
+                    <input type="number" 
+                           id="vmdisk01Number" 
+                           name="vmdisk01" 
+                           min="20" 
+                           max="40" 
+                           value="30"
+                           oninput="{updateSliderValue(this.value)}">
+                </div>
+            </div>
+            
+            <button type="button" onclick="toggleOptionalFields()">Other Fields ▼</button>
+
+            <div id="optionalFields" style="display: none;">
+
+                <div><label>Storage location for the primary virtual disk</label>
+                    <input type="text" name="vmdisk01loc" value="local-lvm">
+                </div>
+
+                <div> <label>Size of the secondary virtual disk</label><input type="number" name="vmdisk02" value="50"></div>
+
+                <div><label>Storage location for the secondary virtual disk </label>
+                    <input type="text" name="vmdisk02loc" value="local-lvm">
+                </div>
+
+            </div>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

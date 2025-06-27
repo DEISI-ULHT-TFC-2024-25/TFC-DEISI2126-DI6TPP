@@ -1,0 +1,12 @@
+- name: Install __PACKAGENAME__ using apt on Proxmox host
+  hosts: __HOSTNAME__
+  become: true
+  tasks:
+    - name: Ensure apt cache is updated
+      ansible.builtin.apt:
+        update_cache: yes
+      
+    - name: Install __PACKAGENAME__
+      ansible.builtin.apt:
+        name: __PACKAGENAME__
+        state: present

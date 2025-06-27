@@ -1,0 +1,92 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    background-color: #0a0f0d; 
+    color: #33ff33;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #33ff33;
+    box-shadow: 0 0 15px #33ff33;
+    padding: 30px;
+    padding-top: 45px;
+    padding-bottom: 85px;
+    text-align: center;
+    width: 350px;
+    border-radius: 8px;
+    animation: flicker 1.5s infinite alternate;
+}
+
+/* Title */
+.login-container h2 {
+    margin: 0 0 15px;
+    color: #33ff33;
+    font-size: 24px;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px #33ff33;
+}
+
+/* Input fields */
+.login-container input {
+    background-color: #111;
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-size: 14px;
+    padding: 10px;
+    margin: 8px 0;
+    width: calc(100% - 22px);
+    outline: none;
+    box-shadow: 0 0 8px #33ff33;
+    border-radius: 4px;
+}
+
+.login-container input::placeholder {
+    color: #44ff44;
+    font-style: italic;
+}
+
+/* login button */
+.login-container button {
+    background-color: black;
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+    margin-top: 15px;
+    width: 100%;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px #33ff33;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 4px;
+}
+
+.login-container button:hover {
+    background-color: #33ff33;
+    color: black;
+}
+
+/* flicker animation around the login form */
+@keyframes flicker {
+    0% {
+        box-shadow: 0 0 5px #33ff33, 0 0 15px #33ff33;
+    }
+    100% {
+        box-shadow: 0 0 10px #33ff33, 0 0 25px #33ff33;
+    }
+}
+
+/* to work on smaller screen devices */
+@media (max-width: 400px) {
+    .login-container {
+        width: 88%;
+        padding: 18px;
+    }
+}

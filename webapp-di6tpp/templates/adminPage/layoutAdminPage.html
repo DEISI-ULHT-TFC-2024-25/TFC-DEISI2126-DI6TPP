@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Page</title>
+    <link rel="icon" type="images/png" href="/static/favicon.ico" sizes="32x32">
+    <link rel="stylesheet" href="/static/css/admin_style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="/admin/create_user">Create Users</a>
+        <a href="/admin/all_users">All Users</a>
+        <a href="/admin/all_tokens_key">Manage Proxmox Credentials</a>
+        <a href="#">Logs</a>
+        <a href="/">Go to homePage</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="content">
+        <!-- this will be displayed in the others html files -->
+        {% block content %}{% endblock %}
+
+    </div>
+    <script src="/static/js/adminscript.js"></script>
+</body>
+</html>

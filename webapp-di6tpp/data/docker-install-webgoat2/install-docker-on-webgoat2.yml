@@ -1,0 +1,138 @@
+---
+- name: Install Docker on webgoat2
+  hosts: webgoat2
+  become: yes
+  tasks:
+  tasks:
+    - name: I am running here
+      command: hostname
+      register: host_output
+
+    - debug:
+        var: host_output.stdout
+
+    - name: Update APT package index
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Wait until dpkg and apt locks are fully released
+      shell: |
+        ! (lsof /var/lib/dpkg/lock || \
+          lsof /var/lib/dpkg/lock-frontend || \
+          pgrep -x apt || \
+          pgrep -x apt-get)
+      register: apt_locks
+      retries: 40
+      delay: 5
+      until: apt_locks.rc == 0
+      changed_when: false
+
+    - name: Check current apt/dpkg processes (debug)
+      shell: ps aux | grep -E 'apt|dpkg'
+      register: apt_ps
+      changed_when: false
+
+    - debug:
+        var: apt_ps.stdout_lines
+
+    - name: Install prerequisite packages
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - gnupg
+        state: present
+        lock_timeout: 300
+
+    - name: Create keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker GPG key using curl
+      command: >
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+      args:
+        creates: /etc/apt/keyrings/docker.asc
+
+# new apt versions, ubuntu recommends store gpg keys on gpg binary files stored in a keyings folder
+# instead of use the old apt-key which is more safe and recommended on external repo like docker
+    - name: Convert GPG key to binary format
+      command: >
+        gpg --dearmor -o /usr/share/keyrings/docker.gpg /etc/apt/keyrings/docker.asc
+      args:
+        creates: /usr/share/keyrings/docker.gpg
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+        filename: docker
+
+    - name: Update APT package index
+      apt:
+        update_cache: yes
+
+    - name: Wait again for dpkg/apt locks before installing Docker
+      shell: |
+        while lsof /var/lib/dpkg/lock >/dev/null 2>&1 || \
+              lsof /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
+              pgrep -x apt >/dev/null || pgrep -x apt-get >/dev/null; do
+          echo "Waiting for APT/DPKG locks to clear..."
+          sleep 5
+        done
+      changed_when: false
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+        lock_timeout: 300
+
+    - name: Verify Docker is installed
+      command: dpkg -s docker-ce
+      register: docker_check
+      failed_when: docker_check.rc != 0
+      changed_when: false
+
+    - name: Enable and start Docker service
+      systemd:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Verify Docker is running
+      command: docker --version
+      register: docker_version
+      failed_when: docker_version.rc != 0
+      changed_when: false
+
+    - debug:
+        var: docker_version.stdout
+
+    # it only allows root user to access the docker socket for safety
+    # so this garantess that the docker group exists
+    - name: Ensure docker group exists
+      group:
+        name: docker
+        state: present
+
+    # so now we can adds the techsupport user to the docker group
+    - name: Add user to docker group
+      become: true #sudo
+      user:
+        name: techsupport
+        groups: docker
+        append: yes
+
+    - name: Ensure techsupport user exists
+      become: true
+      user:
+        name: techsupport
+        state: present
+        groups: sudo    # ou outro grupo relevante, mas tem de estar presente
+        append: yes
